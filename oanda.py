@@ -182,10 +182,22 @@ def order (iname, n, typ, price) :
 #  response = oanda("PUT", "/v3/accounts/101-004-2088872-001/positions/EUR_USD/close", params);
 #  return response
 
-def close_instr (iname) :
+def close_long_instr (iname) :
  params = {"longUnits" : "ALL"}
  response = oanda("PUT", "/v3/accounts/" + account_id + "/positions/" + iname + "/close", params);
  return response
+
+def close_short_instr (iname) :
+ params = {"shortUnits" : "ALL"}
+ response = oanda("PUT", "/v3/accounts/" + account_id + "/positions/" + iname + "/close", params);
+ return response
+
+def close_instr (iname) :
+ u = get_units_instr(iname)
+ if u > 0 :
+  return close_long_instr(iname)
+ elif u < 0 :
+  return close_short_instr(iname) 
 
 def cancel_order (id) :
  response = oanda("PUT", "/v3/accounts/" + account_id + "/orders/" + str(id) + "/cancel", {})
