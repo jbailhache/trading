@@ -256,6 +256,13 @@ def close_short_account_instr (account_id, iname) :
  response = oanda("PUT", "/v3/accounts/" + account_id + "/positions/" + iname + "/close", params);
  return response
 
+def close_account_instr (account_id, iname) :
+ u = get_units_account_instr(account_id,iname)
+ if u > 0 :
+  return close_long_account_instr(account_id,iname)
+ elif u < 0 :
+  return close_short_account_instr(account_id,iname)
+
 def close_instr (iname) :
  return [close_long_account_instr(long_account_id,iname), close_short_account_instr(short_account_id,iname)] 
 
