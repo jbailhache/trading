@@ -292,13 +292,33 @@ def order (iname, n, typ, price) :
 # def close_all (iname) :
 #  return [close_all(long_account_id,iname), close_all(short_account_id,iname)] 
 
-def close_account_instr (account_id, iname) :
- params = {"longUnits" : "ALL", "shortUnits" : "ALL"}
+def close_long_account_instr (account_id, iname) :
+ params = {"longUnits" : "ALL"}
  response = oanda("PUT", "/v3/accounts/" + account_id + "/positions/" + iname + "/close", params);
  return response
 
+def close_short_account_instr (account_id, iname) :
+ params = {"shortUnits" : "ALL"}
+ response = oanda("PUT", "/v3/accounts/" + account_id + "/positions/" + iname + "/close", params);
+ return response
+
+# def close_account_instr (account_id, iname) :
+#  params = {"longUnits" : "ALL", "shortUnits" : "ALL"}
+#  response = oanda("PUT", "/v3/accounts/" + account_id + "/positions/" + iname + "/close", params);
+#  return response
+
+def close_account_instr (account_id, iname) :
+ u = get_units_account_instr(account_id,iname)
+ if u > 0 :
+  return close_long_account_instr(account_id,iname)
+ elif u < 0 :
+  return close_short_account_instr(account_id,iname)
+
 def close_instr (iname) :
- return [close_account_instr(long_account_id,iname), close_account_instr(short_account_id,iname)] 
+ return [close_long_account_instr(long_account_id,iname), close_short_account_instr(short_account_id,iname)] 
+
+# def close_instr (iname) :
+#  return [close_account_instr(long_account_id,iname), close_account_instr(short_account_id,iname)] 
 
 def close_all_account (account_id) :
  inames = get_instruments_names_account(account_id)
