@@ -137,6 +137,8 @@ def simul_thread () :
 
  feuille = oDoc.CurrentController.ActiveSheet
 
+ feuille.getCellByPosition(1,1).String = "Debut simulation"
+
  ligne = int(feuille.getCellRangeByName("B3").Value) - 1
  # ligne -= 1
  dercol = int(feuille.getCellRangeByName("B4").Value)
@@ -260,20 +262,26 @@ def simul_thread () :
 
    elif op == 'CLOSE' :
     iname = feuille.getCellByPosition(c,ligne-3).String
-    if positions[iname] > 0 :
-     liq += positions[iname] * bids[iname]
-     positions[iname] = 0
-    elif positions[iname] < 0 :
-     liq += positions[iname] * asks[iname]
-     positions[iname] = 0
+    close = feuille.getCellByPosition(c,l).Value
+    if close :
+     if positions[iname] > 0 :
+      liq += positions[iname] * bids[iname]
+      positions[iname] = 0
+      feuille.getCellByPosition(0,l).String = "+C"
+     elif positions[iname] < 0 :
+      liq += positions[iname] * asks[iname]
+      positions[iname] = 0
+      feuille.getCellByPosition(0,l).String = "-C"
 
    elif op == 'CANCEL' :
     iname = feuille.getCellByPosition(c,ligne-3).String
-    orders1 = {}
-    for o in orders :
-     if o.instrument != iname :
-      orders1.append(o)
-    orders = orders1
+    cancel = feuille.getCellByPosition(c,l).Value
+    if cancel :
+     orders1 = {}
+     for o in orders :
+      if o.instrument != iname :
+       orders1.append(o)
+     orders = orders1
 
    elif op == 'TRADE' :
     iname = feuille.getCellByPosition(c,ligne-3).String
