@@ -920,7 +920,10 @@ def tradingloop() :
 	# for i in range(nc) :
 	i = 0
 	while i < nc :
-		trading1(i)
+		try :
+			trading1(i)
+		except :
+			pass
 		i += 1
 
 def trading() :
