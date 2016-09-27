@@ -475,9 +475,19 @@ def trading1(nieme):
 						trace = 'order: ' + sob + ' ' + ("%f" % un) + ' ' + id1
 						feuille.getCellByPosition(dercol+1,ligne).String = trace
 						feuille.getCellByPosition(dercol+2,ligne).String = repr(response)
+
+			elif semblable(sob,"!POSITION") :
+				id1 = feuille.getCellByPosition(j,ligne-3).String
+				if id1 != "" :
+					np = int(feuille.getCellByPosition(j,ligne).Value)
+					ap = get_units_instr(id1)
+					dp = np - ap
+					if dp != 0 :
+						response = market_order (id1, dp)
+						feuille.getCellByPosition(dercol+2,ligne).String = repr(response)
 			
 			# if sob == "MARKET" or sob == "LIMIT" or sob == "STOP" or sob == "MARKET_IF_TOUCHED" :
-			if semblable(sob,"MARKET") or semblable(sob,"LIMIT") or semblable(sob,"STOP") or semblable(sob,"MARKET_IF_TOUCHED") :
+			elif semblable(sob,"MARKET") or semblable(sob,"LIMIT") or semblable(sob,"STOP") or semblable(sob,"MARKET_IF_TOUCHED") :
 				# feuille.getCellByPosition(3,ligne).String = 'o1'
 				id1 = feuille.getCellByPosition(j,ligne-3).String
 				if id1 != "" :
