@@ -213,6 +213,21 @@ def simul_thread () :
      s += repr(o.build()) + '; '
     feuille.getCellByPosition(c,l).String = s
 
+   elif op == '!POSITION' :
+    iname = feuille.getCellByPosition(c,ligne-3).String
+    np = feuille.getCellByPosition(c,l).Value
+    ap = positions[iname]
+    dp = np - ap
+    # feuille.getCellByPosition(0,l).Value = asks[iname]
+    if dp != 0 :
+     # o = Order (iname, dp, 'MARKET')
+     # orders.append(o)
+     positions[iname] = np
+     if dp > 0 :
+      liq -= dp * asks[iname]
+     elif dp < 0 :
+      liq -= dp * bids[iname]     
+
    elif (op == 'MARKET' or op == 'LIMIT' or op == 'STOP' or op == 'MARKET_IF_TOUCHED') and trade :
     units = feuille.getCellByPosition(c,l).Value
     npending = number_pending(orders)
