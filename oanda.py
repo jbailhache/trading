@@ -135,6 +135,15 @@ def get_units_instr (iname) :
  else :
   return 0
 
+def set_units_instr (iname, np) :
+ ap = get_units_instr(iname)
+ dp = np - ap
+ if dp != 0 :
+  response = market_order (iname, dp)
+  return response
+ else :
+  return None
+
 def get_transactions (fromtime, totime) :
  response = oanda("GET", "/v3/accounts/" + account_id + "/transactions?from=" + fromtime + "&to=" + totime, {})
  return response
