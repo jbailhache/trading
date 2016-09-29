@@ -166,6 +166,15 @@ def get_units_instr (iname) :
  else :
   return 0
 
+def set_units_instr (iname, np) :
+ ap = get_units_instr(iname)
+ dp = np - ap
+ if dp != 0 :
+  response = market_order (iname, dp)
+  return response
+ else :
+  return None
+
 def get_orders_instr(iname) :
  response = oanda("GET", "/v3/accounts/" + account_id + "/orders?instrument=" + iname + "&count=500", {})
  return response["orders"]
@@ -480,10 +489,13 @@ def trading1(nieme):
 				id1 = feuille.getCellByPosition(j,ligne-3).String
 				if id1 != "" :
 					np = int(feuille.getCellByPosition(j,ligne).Value)
-					ap = get_units_instr(id1)
-					dp = np - ap
-					if dp != 0 :
-						response = market_order (id1, dp)
+					# ap = get_units_instr(id1)
+					# dp = np - ap
+					# if dp != 0 :
+					#	response = market_order (id1, dp)
+					#	feuille.getCellByPosition(dercol+2,ligne).String = repr(response)
+					response = set_units_instr(id1,np)
+					if response != None :
 						feuille.getCellByPosition(dercol+2,ligne).String = repr(response)
 			
 			# if sob == "MARKET" or sob == "LIMIT" or sob == "STOP" or sob == "MARKET_IF_TOUCHED" :
