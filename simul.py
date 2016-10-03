@@ -89,6 +89,7 @@ reel = feuille.getCellRangeByName("B8").String
 iliq = feuille.getCellRangeByName("B21").Value
 intervalle = feuille.getCellRangeByName("B22").Value
 col = feuille.getCellRangeByName("B23").Value
+amorce = feuille.getCellRangeByName("B24").Value
 
 
 def fill (o, bid, ask, pbid, pask, position) : 
@@ -147,11 +148,12 @@ def simul_thread () :
  iliq = feuille.getCellRangeByName("B21").Value
  intervalle = feuille.getCellRangeByName("B22").Value
  col = feuille.getCellRangeByName("B23").Value
+ amorce = int(feuille.getCellRangeByName("B24").Value)
 
  feuille.getCellByPosition(1,1).String = "Simulation en cours"
  for l in range(ligne,30000) :
   if "cours initial" in feuille.getCellByPosition(1,l).String :
-   lci = l
+   lci = l - amorce
    break
  feuille.getCellByPosition(1,1).Value = lci
 
@@ -215,11 +217,13 @@ def simul_thread () :
 
    elif op == '!POSITION' :
     iname = feuille.getCellByPosition(c,ligne-3).String
+    seuil = feuille.getCellByPosition(c,ligne-2).Value
     np = feuille.getCellByPosition(c,l).Value
     ap = positions[iname]
     dp = np - ap
     # feuille.getCellByPosition(0,l).Value = asks[iname]
-    if dp != 0 :
+    # if dp != 0 :
+    if abs(dp) >= seuil :
      # o = Order (iname, dp, 'MARKET')
      # orders.append(o)
      positions[iname] = np
