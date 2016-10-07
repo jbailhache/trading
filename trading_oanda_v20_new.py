@@ -520,7 +520,7 @@ def trading1(nieme):
 				dispatcher.executeDispatch(document, ".uno:GoToCell", "", 0, tuple([args3]))
 
 			# if sob == "sell" or sob == "buy" :
-			elif (semblable(sob,"sell") or semblable(sob,"buy")) and nieme >= amorce :
+			elif (semblable(sob,"sell") or semblable(sob,"buy")) and nieme >= amorce :				
 				id1 = feuille.getCellByPosition(j,ligne-3).String
 				if id1 != "" :
 					un = feuille.getCellByPosition(j,ligne).Value
@@ -531,7 +531,10 @@ def trading1(nieme):
 								u = int(un)
 							elif sob == "sell" :
 								u = - int(un)
-							response = market_order(id1, u)
+							try :
+								response = market_order(id1, u)
+							except :
+								response = 'error'
 						else :
 							response = 'fictive'
 						trace = 'order: ' + sob + ' ' + ("%f" % un) + ' ' + id1
@@ -547,7 +550,10 @@ def trading1(nieme):
 					# if dp != 0 :
 					#	response = market_order (id1, dp)
 					#	feuille.getCellByPosition(dercol+2,ligne).String = repr(response)
-					response = set_units_instr(id1,np)
+					try :
+						response = set_units_instr(id1,np)
+					except :
+						response = 'error'
 					if response != None :
 						feuille.getCellByPosition(dercol+2,ligne).String = repr(response)
 			
@@ -600,7 +606,10 @@ def trading1(nieme):
 							# feuille.getCellByPosition(dercol+4,ligne).String = '<---'
 							if col_req > 0 :
 								feuille.getCellByPosition(col_req,ligne).String = repr(o.build())
-							response = o.send()
+							try :
+								response = o.send()
+							except :
+								response = 'error'
 							if col_res > 0 :
 								feuille.getCellByPosition(col_res,ligne).String = repr(response)
 							# if sob == "MARKET" :
@@ -621,21 +630,30 @@ def trading1(nieme):
 						
 			# if sob == "BALANCE" :
 			if semblable(sob,"BALANCE") :
-				feuille.getCellByPosition(j,ligne).Value = get_balance()
-
+				try :
+					feuille.getCellByPosition(j,ligne).Value = get_balance()
+				except :
+					pass
 			# elif sob == "TRADES" :
 			elif semblable(sob,"TRADES") :
-				feuille.getCellByPosition(j,ligne).Value = len(get_trades())
-
+				try :
+					feuille.getCellByPosition(j,ligne).Value = len(get_trades())
+				except :
+					pass
 			# elif sob == "POSITION" :
 			elif semblable(sob,"POSITION") :
 				instr = feuille.getCellByPosition(j,ligne-3).String
-				feuille.getCellByPosition(j,ligne).Value = get_units_instr(instr)
-
+				try :
+					feuille.getCellByPosition(j,ligne).Value = get_units_instr(instr)
+				except :
+					pass
 			# elif sob == "ORDERS" :
 			elif semblable(sob,"ORDERS") :
 				instr = feuille.getCellByPosition(j,ligne-3).String
-				orders = get_orders_instr(instr)
+				try :
+					orders = get_orders_instr(instr)
+				except :
+					orders = []
 				s_orders = ""
 				pending = 0
 				filled = 0
@@ -660,7 +678,10 @@ def trading1(nieme):
 			# elif sob == "FILLED" or sob == "FILL" :
 			elif semblable(sob,"FILLED") or semblable(sob,"FILL") :
 				instr = feuille.getCellByPosition(j,ligne-3).String
-				orders = get_orders_instr(instr)
+				try :
+					orders = get_orders_instr(instr)
+				except :
+					orders = []
 				s_orders = ""
 				n_filled = 0
 				np = len(prev_orders[j])
@@ -682,38 +703,56 @@ def trading1(nieme):
 				instr = feuille.getCellByPosition(j,ligne-3).String
 				close = feuille.getCellByPosition(j,ligne).Value
 				if close :
-					close_instr(instr)
+					try :
+						close_instr(instr)
+					except :
+						pass
 
 			elif semblable(sob,"+CLOSE") and nieme >= amorce :
 				instr = feuille.getCellByPosition(j,ligne-3).String
 				close = feuille.getCellByPosition(j,ligne).Value
 				if close :
-					close_account_instr(long_account_id,instr)
+					try :
+						close_account_instr(long_account_id,instr)
+					except :
+						pass
 
 			elif semblable(sob,"-CLOSE") and nieme >= amorce :
 				instr = feuille.getCellByPosition(j,ligne-3).String
 				close = feuille.getCellByPosition(j,ligne).Value
 				if close :
-					close_account_instr(short_account_id,instr)
+					try :
+						close_account_instr(short_account_id,instr)
+					except :
+						pass
 
 			elif semblable(sob,"CANCEL") and nieme >= amorce :
 				instr = feuille.getCellByPosition(j,ligne-3).String
 				cancel = feuille.getCellByPosition(j,ligne).Value
 				if cancel :
-					cancel_orders_instr(instr)
-			
+					try :
+						cancel_orders_instr(instr)
+					except :
+						pass
+		
 			elif semblable(sob,"+CANCEL") and nieme >= amorce :
 				instr = feuille.getCellByPosition(j,ligne-3).String
 				cancel = feuille.getCellByPosition(j,ligne).Value
 				if cancel :
-					cancel_orders_account_instr(long_account_id,instr)
+					try :
+						cancel_orders_account_instr(long_account_id,instr)
+					except :
+						pass
 
 			elif semblable(sob,"-CANCEL") and nieme >= amorce :
 				instr = feuille.getCellByPosition(j,ligne-3).String
 				cancel = feuille.getCellByPosition(j,ligne).Value
 				if cancel :
-					cancel_orders_account_instr(short_account_id,instr)
-			
+					try :
+						cancel_orders_account_instr(short_account_id,instr)
+					except :
+						pass
+	
 			elif sob in details :
 				feuille.getCellByPosition(j,ligne).Value = float(details[sob])
 				
