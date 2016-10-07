@@ -151,7 +151,6 @@ def simul_thread () :
  amorce = int(feuille.getCellRangeByName("B24").Value)
 
  feuille.getCellByPosition(1,1).String = "Simulation en cours"
-
  for l in range(ligne,30000) :
   if "cours initial" in feuille.getCellByPosition(1,l).String :
    lci = l - amorce
@@ -178,7 +177,6 @@ def simul_thread () :
  liq = iliq
 
  for l in range(lci-1,ligne-1,-1) :
- # for l in range(lci-1,lci-6,-1) :
 
   trade = ((lci - l) % intervalle) == 0
   if trade :
@@ -190,9 +188,7 @@ def simul_thread () :
   # feuille.getCellByPosition(12,l).Value = bids['FR40_EUR']
 
   filled_orders = ""
-
   for c in range(0,dercol+1) :
-  # for c in range(0,1) :
    op = feuille.getCellByPosition(c,ligne-4).String
 
    if op == '*NAV' :
@@ -201,8 +197,9 @@ def simul_thread () :
     for iname in inames :
      nav += positions[iname] * bids[iname]
     feuille.getCellByPosition(c,l).Value = nav
+    # feuille.getCellByPosition(c+2,l).String = str(positions)
 
-   if op == '*LIQ' :
+   elif op == '*LIQ' :
     feuille.getCellByPosition(c,l).Value = liq
 
    elif op == '*POSITION' :
@@ -330,7 +327,7 @@ def simul_thread () :
        liq -= o.units * ask
       elif o.units < 0 :
        liq -= o.units * bid
-      filled_orders += " " + o.typ + " " + str(o.units) + " " + o.instrument + " at " + str(o.price) + ", TPOF at " + str(o.tpof_price) + " ; "
+      filled_orders += " " + o.typ + " " + str(o.units) + " " + o.instrument + " at " + str(o.price) + ", TPOF at " + str(o.tpof_price) + ", bid=" + str(bid) + ", ask=" + str(ask) + " ; "
       if o.tpof_price != None :
        o1 = Order (o.instrument, -o.units, 'LIMIT')
        o1.price = o.tpof_price
@@ -339,7 +336,6 @@ def simul_thread () :
        o1 = Order (o.instrument, -o.units, 'STOP')
        o1.price = slof_price
        orders.append(o1)
-
 
  feuille.getCellByPosition(1,1).String = "Simulation terminee"
 
