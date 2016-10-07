@@ -345,6 +345,7 @@ def trading1(nieme):
 	delai = feuille.getCellRangeByName("B6").Value
 	ncag = int(feuille.getCellRangeByName("B7").Value)
 	reel = feuille.getCellRangeByName("B8").String
+	amorce = feuille.getCellRangeByName("B24").Value
 	# ttlc = int(feuille.getCellRangeByName("B25").Value)
 	nlignes = int(feuille.getCellRangeByName("B26").Value)
 
@@ -506,15 +507,20 @@ def trading1(nieme):
 				args2.Name = "ToPoint"
 				args2.Value = copyto
 
+				args3 = uno.createUnoStruct("com.sun.star.beans.PropertyValue")
+				args3.Name = "ToPoint"
+				args3.Value = "A1"
+
 				dispatcher.executeDispatch(document, ".uno:GoToCell", "", 0, tuple([args2]))
 				dispatcher.executeDispatch(document, ".uno:ClearContents", "", 0, ())
 				dispatcher.executeDispatch(document, ".uno:GoToCell", "", 0, tuple([args1]))
 				dispatcher.executeDispatch(document, ".uno:Copy", "", 0, ())
 				dispatcher.executeDispatch(document, ".uno:GoToCell", "", 0, tuple([args2]))
 				dispatcher.executeDispatch(document, ".uno:Paste", "", 0, ())
+				dispatcher.executeDispatch(document, ".uno:GoToCell", "", 0, tuple([args3]))
 
 			# if sob == "sell" or sob == "buy" :
-			elif semblable(sob,"sell") or semblable(sob,"buy") :
+			elif (semblable(sob,"sell") or semblable(sob,"buy")) and nieme >= amorce :
 				id1 = feuille.getCellByPosition(j,ligne-3).String
 				if id1 != "" :
 					un = feuille.getCellByPosition(j,ligne).Value
@@ -532,7 +538,7 @@ def trading1(nieme):
 						feuille.getCellByPosition(dercol+1,ligne).String = trace
 						feuille.getCellByPosition(dercol+2,ligne).String = repr(response)
 
-			elif semblable(sob,"!POSITION") :
+			elif semblable(sob,"!POSITION") and nieme >= amorce :
 				id1 = feuille.getCellByPosition(j,ligne-3).String
 				if id1 != "" :
 					np = int(feuille.getCellByPosition(j,ligne).Value)
@@ -546,7 +552,7 @@ def trading1(nieme):
 						feuille.getCellByPosition(dercol+2,ligne).String = repr(response)
 			
 			# if sob == "MARKET" or sob == "LIMIT" or sob == "STOP" or sob == "MARKET_IF_TOUCHED" :
-			elif semblable(sob,"MARKET") or semblable(sob,"LIMIT") or semblable(sob,"STOP") or semblable(sob,"MARKET_IF_TOUCHED") :
+			elif (semblable(sob,"MARKET") or semblable(sob,"LIMIT") or semblable(sob,"STOP") or semblable(sob,"MARKET_IF_TOUCHED")) and nieme >= amorce :
 				# feuille.getCellByPosition(3,ligne).String = 'o1'
 				id1 = feuille.getCellByPosition(j,ligne-3).String
 				if id1 != "" :
@@ -672,37 +678,37 @@ def trading1(nieme):
 				prev_orders[j] = orders
 				feuille.getCellByPosition(j,ligne).String = str(np) + "->" + str(no) + " " + str(n_filled) + " : " + s_orders
 	
-			elif semblable(sob,"CLOSE") :
+			elif semblable(sob,"CLOSE") and nieme >= amorce :
 				instr = feuille.getCellByPosition(j,ligne-3).String
 				close = feuille.getCellByPosition(j,ligne).Value
 				if close :
 					close_instr(instr)
 
-			elif semblable(sob,"+CLOSE") :
+			elif semblable(sob,"+CLOSE") and nieme >= amorce :
 				instr = feuille.getCellByPosition(j,ligne-3).String
 				close = feuille.getCellByPosition(j,ligne).Value
 				if close :
 					close_account_instr(long_account_id,instr)
 
-			elif semblable(sob,"-CLOSE") :
+			elif semblable(sob,"-CLOSE") and nieme >= amorce :
 				instr = feuille.getCellByPosition(j,ligne-3).String
 				close = feuille.getCellByPosition(j,ligne).Value
 				if close :
 					close_account_instr(short_account_id,instr)
 
-			elif semblable(sob,"CANCEL") :
+			elif semblable(sob,"CANCEL") and nieme >= amorce :
 				instr = feuille.getCellByPosition(j,ligne-3).String
 				cancel = feuille.getCellByPosition(j,ligne).Value
 				if cancel :
 					cancel_orders_instr(instr)
 			
-			elif semblable(sob,"+CANCEL") :
+			elif semblable(sob,"+CANCEL") and nieme >= amorce :
 				instr = feuille.getCellByPosition(j,ligne-3).String
 				cancel = feuille.getCellByPosition(j,ligne).Value
 				if cancel :
 					cancel_orders_account_instr(long_account_id,instr)
 
-			elif semblable(sob,"-CANCEL") :
+			elif semblable(sob,"-CANCEL") and nieme >= amorce :
 				instr = feuille.getCellByPosition(j,ligne-3).String
 				cancel = feuille.getCellByPosition(j,ligne).Value
 				if cancel :
