@@ -89,7 +89,8 @@ reel = feuille.getCellRangeByName("B8").String
 iliq = feuille.getCellRangeByName("B21").Value
 intervalle = feuille.getCellRangeByName("B22").Value
 col = feuille.getCellRangeByName("B23").Value
-amorce = feuille.getCellRangeByName("B24").Value
+amorce = int(feuille.getCellRangeByName("B24").Value)
+lignes = int(feuille.getCellRangeByName("B26").Value)
 
 
 def fill (o, bid, ask, pbid, pask, position) : 
@@ -149,11 +150,12 @@ def simul_thread () :
  intervalle = feuille.getCellRangeByName("B22").Value
  col = feuille.getCellRangeByName("B23").Value
  amorce = int(feuille.getCellRangeByName("B24").Value)
+ lignes = int(feuille.getCellRangeByName("B26").Value)
 
  feuille.getCellByPosition(1,1).String = "Simulation en cours"
  for l in range(ligne,30000) :
   if "cours initial" in feuille.getCellByPosition(1,l).String :
-   lci = l - amorce
+   lci = l - amorce * lignes
    break
  feuille.getCellByPosition(1,1).Value = lci
 
