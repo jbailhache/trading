@@ -294,7 +294,7 @@ def simul_thread () :
      elif positions[iname] < 0 :
       liq += positions[iname] * asks[iname]
       positions[iname] = 0
-      feuille.getCellByPosition(0,c).String = "-C"
+      feuille.getCellByPosition(0,l).String = "-C"
 
    elif op == 'CANCEL' :
     iname = feuille.getCellByPosition(c,ligne-3).String
