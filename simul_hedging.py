@@ -89,6 +89,8 @@ reel = feuille.getCellRangeByName("B8").String
 iliq = feuille.getCellRangeByName("B21").Value
 intervalle = feuille.getCellRangeByName("B22").Value
 col = feuille.getCellRangeByName("B23").Value
+amorce = int(feuille.getCellRangeByName("B24").Value)
+lignes = int(feuille.getCellRangeByName("B26").Value)
 
 
 def fill (o, bid, ask, pbid, pask, position) : 
@@ -149,11 +151,14 @@ def simul_thread () :
  iliq = feuille.getCellRangeByName("B21").Value
  intervalle = feuille.getCellRangeByName("B22").Value
  col = feuille.getCellRangeByName("B23").Value
+ amorce = int(feuille.getCellRangeByName("B24").Value)
+ lignes = int(feuille.getCellRangeByName("B26").Value)
+
 
  feuille.getCellByPosition(1,1).String = "Simulation en cours"
  for l in range(ligne,30000) :
   if "cours initial" in feuille.getCellByPosition(1,l).String :
-   lci = l
+   lci = l - amorce * lignes
    break
  feuille.getCellByPosition(1,1).Value = lci
 
@@ -198,6 +203,9 @@ def simul_thread () :
      nav += positions[iname] * bids[iname]
     feuille.getCellByPosition(c,l).Value = nav
 
+   elif op == '*LIQ' :
+    feuille.getCellByPosition(c,l).Value = liq
+
    elif op == '*POSITION' :
     iname = feuille.getCellByPosition(c,ligne-3).String
     feuille.getCellByPosition(c,l).Value = positions[iname]
@@ -214,6 +222,23 @@ def simul_thread () :
     for o in orders :
      s += repr(o.build()) + '; '
     feuille.getCellByPosition(c,l).String = s
+
+   elif op == '!POSITION' :
+    iname = feuille.getCellByPosition(c,ligne-3).String
+    seuil = feuille.getCellByPosition(c,ligne-2).Value
+    np = feuille.getCellByPosition(c,l).Value
+    ap = positions[iname]
+    dp = np - ap
+    # feuille.getCellByPosition(0,l).Value = asks[iname]
+    # if dp != 0 :
+    if abs(dp) >= seuil :
+     # o = Order (iname, dp, 'MARKET')
+     # orders.append(o)
+     positions[iname] = np
+     if dp > 0 :
+      liq -= dp * asks[iname]
+     elif dp < 0 :
+      liq -= dp * bids[iname]     
 
    elif (op == 'MARKET' or op == 'LIMIT' or op == 'STOP' or op == 'MARKET_IF_TOUCHED') and trade :
     units = feuille.getCellByPosition(c,l).Value
@@ -285,9 +310,20 @@ def simul_thread () :
 
    elif op == 'TRADE' :
     iname = feuille.getCellByPosition(c,ligne-3).String
-    bid = feuille.getCellByPosition(c,l).Value
+    # bid = feuille.getCellByPosition(c,l).Value
+    # bids[iname] = bid
+    # ask = feuille.getCellByPosition(c+1,l).Value
+    # asks[iname] = ask
+    k = 0
+    while True :
+     bid = feuille.getCellByPosition(c,l+k).Value
+     ask = feuille.getCellByPosition(c+1,l+k).Value
+     if bid != 0 and ask != 0 :
+      break
+     if l+k > lci :
+      break
+     k += 1
     bids[iname] = bid
-    ask = feuille.getCellByPosition(c+1,l).Value
     asks[iname] = ask
     pbid = feuille.getCellByPosition(c,l+1).Value
     pask = feuille.getCellByPosition(c+1,l+1).Value
