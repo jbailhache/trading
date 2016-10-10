@@ -182,6 +182,15 @@ def get_long_units_instr (iname) :
 def get_short_units_instr (iname) :
  return get_units_account_instr(short_account_id,iname)
 
+def set_units_account_instr (account_id, iname, np) :
+ ap = get_units_account_instr (account_id, iname)
+ dp = np - ap
+ if dp != 0 :
+  response = market_order_account (account_id, iname, dp)
+  return response
+ else :
+  return None
+
 def get_transactions_account (account_id, fromtime, totime) :
  response = oanda("GET", "/v3/accounts/" + account_id + "/transactions?from=" + fromtime + "&to=" + totime, {})
  return response
