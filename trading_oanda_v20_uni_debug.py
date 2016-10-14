@@ -467,7 +467,7 @@ def cancel_all () :
   cancel_all_account(main_account_id)
 
 def str_order(o) :
-	try :
+	#try :
 		# message("str_order(" + str(o) + ")")
 		cond = " ?? "
 		if not ("units" in o) :
@@ -490,9 +490,9 @@ def str_order(o) :
 		# s_order = o["id"] + ": " + o["type"] + " " + av + " " + str(abs(int(o["units"]))) + " " + o["instrument"] + cond + str(o["price"])
 		s_order = " %6s : %-7s %5s %5s %-10s %2s %7s " % (o["id"], o["type"], av, str(abs(int(o["units"]))), o["instrument"], cond, o["price"])
 		return s_order
-	except :
-		message("Error str_order:("+str(o)+")")
-		return "Error:(" + str(o) + ")"
+	#except :
+	#	message("Error str_order:("+str(o)+")")
+	#	return "Error:(" + str(o) + ")"
 
 def str_price (price, instrument) :
  pip_location = get_pip_location(instrument)
@@ -561,7 +561,7 @@ def init_hedging () :
 	global hedging, account_id, main_account_id, long_account_id, short_account_id
 
 	hedg = feuille.getCellRangeByName("B28").String
-	if semblable(hedg,'OUI') or semblable(hedg,'O') or semblable(hedg,'YES') or semblable(hedg,'Y') or hedg == "" :
+	if semblable(hedg,'OUI') or semblable(hedg,'O') or semblable(hedg,'YES') or semblable(hedg,'Y') :
 	# if semblable(hedg,'OUI') :
 		hedging = True
 	else :
@@ -870,11 +870,10 @@ def trading1(nieme):
 							if col_req > 0 :
 								feuille.getCellByPosition(col_req,ligne).String = repr(o.build())
 							#response = o.send()
-							try :
-								response = o.send()
-							except :
-								message('error sending order')
-								response = 'error sending order'
+							#try :
+							response = o.send()
+							#except :
+							#	response = 'error sending order'
 							if col_res > 0 :
 								feuille.getCellByPosition(col_res,ligne).String = repr(response)
 							# if sob == "MARKET" :
@@ -1146,12 +1145,12 @@ def tradingloop() :
 		message("Error get_instruments_names")
 		instrs = []
 
-	try :
-		instruments = get_instruments()
-		feuille.getCellRangeByName("C20").String = "instr:("+str(instruments)+")"
-	except :
-		message("Error get_instruments")
-		instruments = []
+	#try :
+	instruments = get_instruments()
+	feuille.getCellRangeByName("C20").String = "instr:("+str(instruments)+")"
+	#except :
+	#	message("Error get_instruments")
+	#	instruments = []
 
 	# feuille.getCellByPosition(1,1).String = "Essai"
 	feuille.getCellByPosition(1,1).String = str(instrs)
@@ -1175,10 +1174,10 @@ def tradingloop() :
 	message("loop")
 	while i < nc :
 		# trading1(i)
-		try :
-			trading1(i)
-		except :
-			message("Error trading1")
+		#try :
+		trading1(i)
+		#except :
+		#	message("Error trading1")
 		#	pass
 		i += 1
 
