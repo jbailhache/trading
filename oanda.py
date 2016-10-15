@@ -208,6 +208,12 @@ def close_instr (iname) :
  elif u < 0 :
   return close_short_instr(iname) 
 
+def close_all () :
+ inames = get_instruments_names()
+ for iname in inames :
+  print iname
+  close_instr(iname)
+
 def cancel_order (id) :
  response = oanda("PUT", "/v3/accounts/" + account_id + "/orders/" + str(id) + "/cancel", {})
  print response
